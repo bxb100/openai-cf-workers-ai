@@ -11,5 +11,8 @@ bucket_name = "openai-cf-images"
 preview_bucket_name = "ai-images"
 
 [vars]
-CLOUDFLARE_ACCOUNT_ID = "c8c30db3dddc4ad31065d336368c7905" # replace with your own.
-# MODEL_MAPPER = { "gpt-3.5-turbo" = "@cf/meta/llama-2-7b-chat-int8" } # Optional
+CLOUDFLARE_ACCOUNT_ID = "423f7d160644eba02b8094c8c8726b46" # replace with your own.
+MODEL_MAPPER = { "gpt-3.5-turbo" = "@cf/meta/llama-2-7b-chat-int8", "dall-e-3" = "@cf/stabilityai/stable-diffusion-xl-base-1.0" } # Optional
+
+[placement]
+mode = "smart"
