@@ -8,7 +8,7 @@ export const transcriptionHandler = async (request, env) => {
 			const formData = await request.formData();
 			const audio = formData.get('file');
 			if (!audio) {
-				return Response.json({ error: 'no audi`o provided' }, { status: 400 });
+				return Response.json({ error: 'no audio provided' }, { status: 400 });
 			}
 			const blob = await audio.arrayBuffer();
 			const input = {
@@ -95,7 +95,8 @@ export const translationHandler = async (request, env) => {
 
 	// if there is no header or it's not json, return an error
 	if (error) {
-		return Response.json({ error: error.message }, { status: 400 });
+		// console.error(error)
+		return Response.json({ error: JSON.stringify(error) }, { status: 400 });
 	}
 
 	// if we get here, return a 400 error
