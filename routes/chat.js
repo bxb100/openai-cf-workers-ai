@@ -1,3 +1,5 @@
+import { toBytesArray } from '../utils/image';
+
 export const chatHandler = async (request, env) => {
 	let model = '@cf/mistral/mistral-7b-instruct-v0.1';
 	let messages = [];
@@ -83,8 +85,32 @@ export const chatHandler = async (request, env) => {
 				},
 			});
 
+			let input = undefined;
+			const newMessages = [];
+			for (let message of messages) {
+				if (message.content) {
+					if (Array.isArray(message.content)) {
+						if (message.content.length > 1) {
+							// not support multiple images
+							input = {
+								image: [...(await toBytesArray(message.content[1]["image_url"].url))],
+								prompt: message.content[0].text,
+								max_tokens: 512,
+							}
+							break;
+						}
+						newMessages.push({ ...message, content: message.content[0].text });
+					}
+				}
+				newMessages.push( message);
+			}
+
+			if (json.stream && input) {
+				throw new Error('streaming not supported for vision');
+			}
+
 			// for now, nothing else does anything. Load the ai model.
-			const aiResp = await env.AI.run(model, { stream: json.stream, messages });
+			const aiResp = await env.AI.run(model, input ? input : { stream: json.stream, newMessages });
 			// Piping the readableStream through the transformStream
 			return json.stream ? new Response(aiResp.pipeThrough(transformer), {
 				headers: {
@@ -102,7 +128,7 @@ export const chatHandler = async (request, env) => {
 						index: 0,
 						message: {
 							role: 'assistant',
-							content: aiResp.response,
+							content: aiResp.response || aiResp.description,
 						},
 						finish_reason: 'stop',
 					},
@@ -115,6 +141,7 @@ export const chatHandler = async (request, env) => {
 			});
 		}
 	} catch (e) {
+		console.log(e);
 		error = e;
 	}
 
