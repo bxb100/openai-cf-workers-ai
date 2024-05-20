@@ -53,7 +53,7 @@ export const chatHandler = async (request, env) => {
 							if (line.startsWith('data: ')) {
 								const content = line.slice('data: '.length);
 								console.log(content);
-								const doneflag = content.trim() == '[DONE]';
+								const doneflag = content.trim() === '[DONE]';
 								if (doneflag) {
 									controller.enqueue(encoder.encode("data: [DONE]\n\n"));
 									return;

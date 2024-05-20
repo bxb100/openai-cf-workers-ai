@@ -1,4 +1,4 @@
-import { Router, createCors, error, json } from 'itty-router';
+import { Router, createCors, error } from 'itty-router';
 
 // import the routes
 import { chatHandler } from './routes/chat';
